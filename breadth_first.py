@@ -40,6 +40,7 @@ def possiblesteps(q):
 		i = lastcoord[0]
 		y = lastcoord[1]
 	else:
+		lastcoord = None
 		step = list()
 		step.append(q.pop(0))
 		i = step[0][0]
@@ -47,7 +48,7 @@ def possiblesteps(q):
 	
 	
 	# Possible steps (up down left right)
-	if (([i+1, y]) in ppath):
+	if (([i+1, y]) in ppath) and ([i+1, y] != lastcoord):
 		# if checkend == true break and print, else keep going
 		if checkEnd([i+1, y], end) == True:
 			solutionFound = True
@@ -59,7 +60,7 @@ def possiblesteps(q):
 			new_path.append([i+1, y])
 			q.append(new_path)
 				
-	if ([i-1, y]) in ppath:
+	if ([i-1, y]) in ppath and ([i-1, y] != lastcoord):
 		if checkEnd([i-1, y], end) == True:
 			solutionFound = True
 			new_path = step.copy()
@@ -70,7 +71,7 @@ def possiblesteps(q):
 			new_path.append([i-1, y])
 			q.append(new_path)
 			
-	if ([i, y+1]) in ppath:
+	if ([i, y+1]) in ppath and ([i, y+1] != lastcoord):
 		if checkEnd([i, y+1], end) == True:
 			solutionFound = True
 			new_path = step.copy()
@@ -81,7 +82,7 @@ def possiblesteps(q):
 			new_path.append([i, y+1])
 			q.append(new_path)
 	
-	if ([i, y-1]) in ppath:
+	if ([i, y-1]) in ppath and ([i, y-1] != lastcoord):
 		if checkEnd([i, y-1], end) == True:
 			solutionFound = True
 			new_path = step.copy()
