@@ -8,6 +8,7 @@ class Maze(object):
 		self.ppath = []
 		self.solutionFound = False
 		
+	# Finds the start and end nodes in maze
 	def findStartEnd(self):
 		for i in range(len(self.maze)):
 			for y in range(len(self.maze[0])):
@@ -16,12 +17,15 @@ class Maze(object):
 				elif self.maze[i][y] == 'X':
 					self.end = [i, y]
 
+	# Finds the valid moves based on an iteration of the maze
+	# and checking for '#' obstacles
 	def findppath(self):
 		for i in range(len(self.maze)):
 			for y in range(len(self.maze[0])):
 				if self.maze[i][y] != '#':
 					self.ppath.append([i, y])
 					
+	# Prints the maze based on the path that reaches end node
 	def printmaze(self, path):
 		for i in range(len(self.maze)):
 			for y in range(len(self.maze[0])):
@@ -35,14 +39,16 @@ class Maze(object):
 						print(self.maze[i][y])
 					else:
 						print(self.maze[i][y], end=' ')
-		print('\n')
 
+	# Finds the shortest path to the end node by iterating through
+	# all possible moves
 	def findpath(self):
 		self.findStartEnd()
 		self.findppath()
 		
 		queue = list()
 		queue.append(self.start)
+		visited_nodes = list()
 		turn = 0
 		
 		while self.solutionFound == False:
@@ -58,54 +64,26 @@ class Maze(object):
 				i = step[0][0]
 				y = step[0][1]
 
-			# Possible steps (up down left right)
-			if (([i+1, y]) in self.ppath) and ([i+1, y] != lastcoord):
-				# if checkend == true break and print, else keep going
-				if ([i+1, y]) == self.end:
-					self.solutionFound = True
+			for new_pos in [(1,0), (-1,0), (0,1), (0,-1)]:
+				move = [new_pos[0] + i, new_pos[1] + y]
+				
+				# Checks if move is valid and non duplicate
+				if ((move in self.ppath) and (move != lastcoord) and
+				move not in visited_nodes):
 					new_path = step.copy()
-					new_path.append([i+1, y])
-					self.printmaze(new_path)
-				else:
-					new_path = step.copy()
-					new_path.append([i+1, y])
-					queue.append(new_path)
-						
-			if ([i-1, y]) in self.ppath and ([i-1, y] != lastcoord):
-				if ([i-1, y]) == self.end:
-					self.solutionFound = True
-					new_path = step.copy()
-					new_path.append([i-1, y])
-					self.printmaze(new_path)			
-				else:
-					new_path = step.copy()
-					new_path.append([i-1, y])
-					queue.append(new_path)
+					new_path.append(move)
+					visited_nodes.append(move)
 					
-			if ([i, y+1]) in self.ppath and ([i, y+1] != lastcoord):
-				if ([i, y+1]) == self.end:
-					self.solutionFound = True
-					new_path = step.copy()
-					new_path.append([i, y+1])
-					self.printmaze(new_path)
-				else:
-					new_path = step.copy()
-					new_path.append([i, y+1])
-					queue.append(new_path)
-			
-			if ([i, y-1]) in self.ppath and ([i, y-1] != lastcoord):
-				if ([i, y-1]) == self.end:
-					self.solutionFound = True
-					new_path = step.copy()
-					new_path.append([i, y-1])
-					self.printmaze(new_path)
-				else:
-					new_path = step.copy()
-					new_path.append([i, y-1])
-					queue.append(new_path)
-
+					if move == self.end:
+						self.solutionFound = True
+						self.printmaze(new_path)
+						print('\n')
+					else:
+						queue.append(new_path)
+					
 			turn += 1
 
+# test maze 1
 maze = [['O', ' ', '#', '#', '#', '#'],
 		['#', ' ', '#', ' ', ' ', '#'],
 		['#', ' ', '#', ' ', ' ', ' '],
@@ -114,6 +92,7 @@ maze = [['O', ' ', '#', '#', '#', '#'],
 		['#', ' ', ' ', ' ', '#', ' '],
 		['#', '#', '#', '#', '#', 'X']]
 
+# test maze 2
 maze2 = [['#', '#', '#', '#', '#', 'X'],
 		[' ', '#', ' ', '#', ' ', ' '],
 		[' ', '#', ' ', '#', ' ', '#'],
@@ -128,5 +107,4 @@ mymaze.findpath()
 
 mymaze2 = Maze(maze2)
 mymaze2.findpath()
-
 
